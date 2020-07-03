@@ -39,3 +39,16 @@ dotspacemacs-additional-packages '(
                                    yasnippet-snippets
                                    groovy-mode
                                    )
+
+(defun dotspacemacs/user-config ()
+  "Configuration for user code:
+This function is called at the very end of Spacemacs startup, after layer
+configuration.
+Put your configuration code here, except for variables that should be set
+before packages are loaded."
+  (load-file "/home/mshogin/go/src/github.com/mshogin/env-config/emacs/windows.el")
+  (load-file "/home/mshogin/go/src/github.com/mshogin/env-config/emacs/key-bindings.el")
+  (load-file "/home/mshogin/go/src/github.com/mshogin/env-config/emacs/go.el")
+  (load-file "/home/mshogin/go/src/github.com/mshogin/env-config/emacs/general.el")
+  (load-file "/home/mshogin/go/src/github.com/mshogin/env-config/emacs/ci.el")
+  )

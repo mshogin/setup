@@ -58,6 +58,16 @@
   (setq go-use-testify-for-testing t)
   )
 
+(defun ms--project-root ()
+  (cl-loop for dir in '(".git/" ".hg/" ".svn/" ".git")
+           when (locate-dominating-file default-directory dir)
+           return it))
 
+(global-set-key (kbd "M-RET t r") 'projectile-run-project)
 
-(global-set-key (kbd "M-m i i") 'helm-imenu)
+(defun spacemacs/go-run-package-tests-race ()
+  (interactive)
+  (spacemacs/go-run-tests "-race"))
+
+(global-set-key (kbd "M-RET t R") 'spacemacs/go-run-package-tests-race)
+

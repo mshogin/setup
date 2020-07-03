@@ -8,3 +8,9 @@
 
 ;; helm
 (global-set-key (kbd "M-m i i") 'helm-imenu)
+
+;; folding
+(global-set-key (kbd "M-m t f") 'evil-toggle-fold)
+
+;; dumb-jump
+(global-set-key (kbd "M-.") 'xref-find-definitions)
