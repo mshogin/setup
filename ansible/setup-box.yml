@@ -13,7 +13,7 @@
         - setupbox
       become_user: root
       apt:
-        name: ['git', 'curl', 'jq', 'less', 'tree', 'zsh', 'locate', 'fzf', 'direnv']
+        name: ['git', 'curl', 'jq', 'less', 'tree', 'zsh', 'locate', 'fzf', 'direnv', 'tilda']
         state: present
 
     - name: "zsh - remove old"
@@ -190,6 +190,10 @@
             (load-file "/home/mshogin/.emacs.d/mshogin-general.el")
             )
 
+    - name: "emacs - configure spacemacs: configure layers"
+      tags:
+        - emacs
+      shell: emacs
 
 
 
