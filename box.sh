@@ -1,3 +1,4 @@
-sudo apt update
+username=$1
 
-sudo apt install git
+sudo apt update --fix-missing
+sudo install ansible

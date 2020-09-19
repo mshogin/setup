@@ -53,6 +53,7 @@
   (interactive)
   (setq go-use-testify-for-testing nil)
 )
+
 (defun toogle-test-suite-on ()
   (interactive)
   (setq go-use-testify-for-testing t)

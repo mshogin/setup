@@ -1,0 +1,197 @@
+---
+
+- name: Setup box
+  gather_facts: false
+  hosts:
+    - localhost
+  become: yes
+  become_user: mshogin
+  tasks:
+
+    - name: "Install packages"
+      tags:
+        - setupbox
+      become_user: root
+      apt:
+        name: ['git', 'curl', 'jq', 'less', 'tree', 'zsh', 'locate', 'fzf', 'direnv']
+        state: present
+
+    - name: "zsh - remove old"
+      tags:
+        - zsh
+      file:
+        path: "~/.oh-my-zsh"
+        state: absent
+
+    - name: "zsh - install ohmyzsh"
+      tags:
+        - zsh
+      get_url:
+        url: "https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh"
+        dest: /tmp/zshinstaller
+    - script: /tmp/zshinstaller
+      tags:
+        - zsh
+
+    - name: "zsh - install zsh-syntax-highlighting"
+      tags:
+        - zsh
+        - zshplugins
+      git:
+        repo: "https://github.com/zsh-users/zsh-syntax-highlighting.git"
+        dest: "~/.oh-my-zsh/plugins/zsh-syntax-highlighting"
+
+    - name: "zsh - install zsh-syntax-highlighting"
+      tags:
+        - zsh
+        - zshplugins
+      git:
+        repo: "https://github.com/zsh-users/zsh-autosuggestions.git"
+        dest: "~/.oh-my-zsh/plugins/zsh-autosuggestions"
+
+    - name: "zsh - enable plugins"
+      tags:
+        - zsh
+        - zshplugins
+      lineinfile:
+        dest: ~/.zshrc
+        regexp: "plugins=(git)"
+        line: "plugins=(git golang ansible fzf zsh-autosuggestions zsh-syntax-highlighting z)"
+        state: present
+
+    - name: "emacs - install"
+      tags:
+        - emacs
+      snap:
+        name: emacs
+
+    - name: "emacs - uninstall existing spacemacs"
+      tags:
+        - emacs
+      file:
+        path: "~/.emacs.d"
+        state: absent
+
+    - name: "emacs - install spacemacs"
+      tags:
+        - emacs
+      git:
+        repo: "https://github.com/syl20bnr/spacemacs"
+        dest: "~/.emacs.d"
+        version: develop
+        force: yes
+
+    - name: "emacs - configure spacemacs (it starts emacs and waits till you close the window. Also, it creates ~/.spacemacs file)"
+      tags:
+        - emacs
+      shell: emacs
+
+    - name: "emacs - configure .spacemacs (layers)"
+      tags:
+        - emacs
+        - spacemacs
+      replace:
+        path: "~/.spacemacs"
+        regexp: '(List\sof\sconfiguration\slayers\sto\sload[\s\S]*)treemacs'
+        replace: |-
+          List of configuration layers to load.
+             dotspacemacs-configuration-layers
+             '(yaml
+               go
+               ;; ----------------------------------------------------------------
+               ;; Example of useful layers you may want to use right away.
+               ;; Uncomment some layer names and press `SPC f e R' (Vim style) or
+               ;; `M-m f e R' (Emacs style) to install them.
+               ;; ----------------------------------------------------------------
+               auto-completion
+               better-defaults
+               emacs-lisp
+               git
+               helm
+               lsp
+               ;; markdown
+               multiple-cursors
+               ;; org
+               (shell :variables
+                     shell-default-height 230
+                     shell-default-position 'bottom)
+               spell-checking
+               syntax-checking
+               ;; version-control
+               treemacs
+
+    - name: "emacs - configure .spacemacs (additional packages)"
+      tags:
+        - emacs
+        - spacemacs
+      replace:
+        path: "~/.spacemacs"
+        regexp: "(dotspacemacs-additional-packages\\s'\\(\\))"
+        replace: |-
+          dotspacemacs-additional-packages '(
+                                      go-dlv
+                                      go-imports
+                                      gotest
+                                      dockerfile-mode
+                                      direnv
+                                      yasnippet-snippets
+                                      groovy-mode
+                                      )
+
+    - name: "emacs - configure .spacemacs (fullscreen)"
+      tags:
+        - emacs
+        - spacemacs
+      replace:
+        path: "~/.spacemacs"
+        regexp: "(dotspacemacs-fullscreen-at-startup nil)"
+        replace: "dotspacemacs-fullscreen-at-startup t"
+
+    - name: "emacs - configure .spacemacs (whitespace)"
+      tags:
+        - emacs
+        - spacemacs
+      replace:
+        path: "~/.spacemacs"
+        regexp: "(dotspacemacs-whitespace-cleanup nil)"
+        replace: "dotspacemacs-whitespace-cleanup t"
+
+    - name: "emacs - get custom files"
+      tags:
+        - emacs
+        - spacemacs
+      get_url:
+        url: "https://raw.githubusercontent.com/mshogin/setup/master/emacs/{{item}}"
+        dest: "~/.emacs.d/mshogin-{{item}}"
+        force: yes
+      with_items:
+        - "key-bindings.el"
+        - "windows.el"
+        - "go.el"
+        - "general.el"
+
+    - name: "emacs - configure .spacemacs (userconfig)"
+      tags:
+        - emacs
+        - spacemacs
+      replace:
+        path: "~/.spacemacs"
+        regexp: '(\(defun dotspacemacs/user-config[\s\S]*)\)'
+        replace: |-
+          (defun dotspacemacs/user-config ()
+            "Configuration for user code:
+            This function is called at the very end of Spacemacs startup, after layer
+            configuration.
+            Put your configuration code here, except for variables that should be set
+            before packages are loaded."
+            (load-file "/home/mshogin/.emacs.d/mshogin-windows.el")
+            (load-file "/home/mshogin/.emacs.d/mshogin-key-bindings.el")
+            (load-file "/home/mshogin/.emacs.d/mshogin-go.el")
+            (load-file "/home/mshogin/.emacs.d/mshogin-general.el")
+            )
+
+
+
+
+
+        

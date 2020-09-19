@@ -1,0 +1,25 @@
+---
+
+- name: Configure work specific actions
+  gather_facts: false
+  hosts:
+    - localhost
+  become: yes
+  become_user: mshogin
+  tasks:
+
+    - name: "Create zsh aliases"
+      tags:
+        - setup-work-box
+      lineinfile:
+        dest: /home/mshogin/.zshrc
+        regexp: "{{item}}"
+        line: "{{item}}"
+        state: present
+      with_items:
+        - 'alias bc="cd /home/mshogin/bidcast"'
+        - 'alias ci="cd /home/mshogin/ci"'
+        - 'alias bs="cd /home/mshogin/bidswitch"'
+        - 'alias bc="us /home/mshogin/userver"'
+        - 'alias bco="us /home/mshogin/bidcore"'
+
