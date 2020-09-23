@@ -35,8 +35,9 @@
   :commands yas-minor-mode
   :hook (go-mode . yas-minor-mode))
 
-;; (setq gofmt-command "goimports")
-;; (add-hook 'before-save-hook 'gofmt-before-save)
+(lsp-register-custom-settings
+ '(("gopls.completeUnimported" t t)
+   ("gopls.staticcheck" t t)))
 
 (defun spacemacs/go-run-test-current-function ()
   (interactive)

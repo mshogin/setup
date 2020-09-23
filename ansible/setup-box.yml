@@ -13,7 +13,7 @@
         - setupbox
       become_user: root
       apt:
-        name: ['git', 'curl', 'jq', 'less', 'tree', 'zsh', 'locate', 'fzf', 'direnv', 'tilda']
+        name: ['git', 'curl', 'jq', 'less', 'tree', 'zsh', 'locate', 'direnv', 'tilda', 'gcc', 'pandoc', 'hugo']
         state: present
 
     - name: "zsh - remove old"
@@ -55,7 +55,7 @@
         - zshplugins
       lineinfile:
         dest: ~/.zshrc
-        regexp: "plugins=(git)"
+        regexp: 'plugins=\(git\)'
         line: "plugins=(git golang ansible fzf zsh-autosuggestions zsh-syntax-highlighting z)"
         state: present
 
@@ -126,7 +126,7 @@
         - spacemacs
       replace:
         path: "~/.spacemacs"
-        regexp: "(dotspacemacs-additional-packages\\s'\\(\\))"
+        regexp: '(dotspacemacs-additional-packages[^\)]*?\))'
         replace: |-
           dotspacemacs-additional-packages '(
                                       go-dlv
@@ -136,6 +136,7 @@
                                       direnv
                                       yasnippet-snippets
                                       groovy-mode
+                                      flycheck-golangci-lint
                                       )
 
     - name: "emacs - configure .spacemacs (fullscreen)"
@@ -190,10 +191,57 @@
             (load-file "/home/mshogin/.emacs.d/mshogin-general.el")
             )
 
-    - name: "emacs - configure spacemacs: configure layers"
+    - name: "emacs - configure .spacemacs (spacemacs.env)"
       tags:
         - emacs
-      shell: emacs
+        - spacemacs
+      lineinfile:
+        path: "~/.spacemacs.env"
+        regexp: 'GO111MODULE=on'
+        line: 'GO111MODULE=on'
+        state: present
+
+    - name: "golang - install"
+      become_user: root
+      tags:
+        - golang
+      unarchive: 
+        src: https://dl.google.com/go/go1.15.2.linux-amd64.tar.gz
+        dest: /usr/local/
+        remote_src: yes
+
+    - name: "golang - make go link"
+      become_user: root
+      tags:
+        - golang
+      copy:
+        src: /usr/local/go/bin/go
+        dest: /usr/bin/go
+        state: link
+
+    - name: "golang - packages: delve"
+      tags:
+        - golang
+        - golangpackages
+      shell: |
+        GO111MODULE=on go get github.com/go-delve/delve/cmd/dlv
+        sudo ln -sf ~/go/bin/dlv /usr/bin/dlv
+        dlv version
+
+        GO111MODULE=on go get golang.org/x/tools/gopls@latest
+        sudo ln -sf ~/go/bin/gopls /usr/bin/gopls
+        gopls version
+
+        GO111MODULE=on go get github.com/golangci/golangci-lint/cmd/golangci-lint@v1.31.0
+        sudo ln -sf ~/go/bin/golangci-lint /usr/bin/golangci-lint
+        golangci-lint version
+
+    - name: "docker - install"
+      tags:
+        - docker
+      become_user: root
+      snap:
+        name: docker
 
 
 

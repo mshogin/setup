@@ -10,3 +10,6 @@
                 (if (= (user-uid) 0) " # " " $ "))))
 
 (add-to-list 'auto-mode-alist '("\\pipeline\\'" . groovy-mode))
+
+(custom-set-variables
+ '(markdown-command "/usr/bin/pandoc"))
