@@ -1,0 +1,15 @@
+(require 'url)
+
+(defun make-rest-api-call ()
+  (let* ((url "https://youtrack.wildberries.ru/api/issues?query=Assignee:%20me%20Type:%20Epic%20")
+         (headers '(("Authorization" . "Bearer perm:TWlraGFpbF9TaG9naW4=.NjktNDc0.zOGouwEnVr8gzlmL8HJMMvdIh8xPPP")
+                    ("Accept" . "application/json")
+                    ("Content-Type" . "application/json")))
+         (url-request-method "GET")
+         (url-request-extra-headers headers))
+    (url-retrieve url (lambda (status)
+                        (goto-char (point-min))
+                        (search-forward "\n\n")
+                        (message "Response: %s" (buffer-substring (point) (point-max)))))))
+
+(make-rest-api-call)

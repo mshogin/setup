@@ -8,19 +8,25 @@
 
 ;; helm
 (global-set-key (kbd "M-m i i") 'helm-imenu)
-(global-set-key (kbd "M-m e e") 'ein:worksheet-execute-cell)
-(global-set-key (kbd "M-m e i") 'ein:worksheet-execute-cell-and-goto-next-km)
 
 ;; folding
 (global-set-key (kbd "M-m t f") 'evil-toggle-fold)
 
-;; dumb-jump
-(global-set-key (kbd "M-.") 'xref-find-definitions)
+;; ;; dumb-jump
+;; (global-set-key (kbd "M-.") 'xref-find-definitions)
+(global-set-key (kbd "M-m .") 'xref-find-definitions-other-window)
+
+;;
+(global-set-key (kbd "M-<return> t r") 'projectile-run-project)
+
+;; Open file at point
+(global-set-key (kbd "M-m f a") 'find-file-at-point)
+
+;; Google
+(global-set-key (kbd "M-m a g g") 'google-this-line)
+
+;; Google
+(global-set-key (kbd "M-t") 'term-toggle-eshell)
 
 (global-set-key (kbd "C-M-n") 'mc/mark-next-like-this)
 (global-set-key (kbd "C-M-p") 'mc/unmark-next-like-this)
-
-;; copilot
-(global-set-key (kbd "M-m a w c") 'copilot-complete)
-(global-set-key (kbd "M-m a w a") 'copilot-accept-completion)
-(global-set-key (kbd "M-m a w n") 'copilot-next-completion)

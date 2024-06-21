@@ -1,0 +1,13 @@
+forge 'https://forge.puppet.com'
+
+mod 'puppetlabs-vcsrepo', '4.0.1'
+mod 'puppetlabs-docker'
+mod 'puppetlabs/stdlib'
+mod 'puppetlabs-apt'
+mod "puppetlabs/inifile"
+mod "puppetlabs/concat"
+mod 'puppetlabs-accounts'
+mod 'puppet-nodejs', '9.0.0'
+mod 'google-cloud', '0.4.1'
+mod 'google-gcompute', '0.3.0'
+зз
